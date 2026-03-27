@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết tư vấn khách hàng | MAI TRÂM Beauty &amp; Spa</title>
+    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}?v=6">
+</head>
+<body data-initial-modal="{{ modal_state }}">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>MAI TRÂM</h1>
+                <p>Beauty &amp; Spa</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="nav-item" href="{% url 'service_dashboard' %}">
+                    <span class="nav-icon nav-gear" aria-hidden="true"></span>
+                    <span>Quản lý dịch vụ</span>
+                </a>
+                <a class="nav-item" href="{% url 'appointment_dashboard' %}">
+                    <span class="nav-icon nav-calendar" aria-hidden="true"></span>
+                    <span>Quản lý lịch hẹn</span>
+                </a>
+                <a class="nav-item active" href="{% url 'feedback_dashboard' %}">
+                    <span class="nav-icon nav-reply" aria-hidden="true"></span>
+                    <span>Quản lý phản hồi</span>
+                </a>
+                <a class="nav-item sub-item" href="{% url 'feedback_dashboard' %}">
+                    <span>Phản hồi đánh giá</span>
+                </a>
+                <a class="nav-item sub-item active-sub" href="{% url 'consultation_dashboard' %}">
+                    <span>Tư vấn khách hàng</span>
+                </a>
+                <a class="nav-item" href="{% url 'customer_dashboard' %}">
+                    <span class="nav-icon nav-user" aria-hidden="true"></span>
+                    <span>Quản lý khách hàng</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="heading-card">
+                    <div>
+                        <h2>Quản lý phản hồi</h2>
+                        <p>Phản hồi đánh giá và tư vấn cho khách hàng</p>
+                    </div>
+                </div>
+                <div class="manager-card">
+                    <div class="manager-avatar"></div>
+                    <span>Quản Lý</span>
+                </div>
+            </header>
+
+            <section class="consultation-chat-shell">
+                <article class="consultation-profile-card">
+                    <div class="conversation-avatar large {{ conversation.avatar_class }}"></div>
+                    <h3>{{ conversation.name }}</h3>
+                </article>
+
+                <section class="consultation-chat-card">
+                    <div class="chat-thread">
+                        {% for item in conversation.messages %}
+                            {% if item.divider %}
+                            <div class="chat-divider">{{ item.divider }}</div>
+                            {% else %}
+                            <div class="chat-row {{ item.side }}">
+                                {% if item.side == "left" %}
+                                <div class="conversation-avatar tiny {{ conversation.avatar_class }}"></div>
+                                <div class="chat-bubble outline">{{ item.text }}</div>
+                                {% else %}
+                                <div class="chat-time">{{ item.time }}</div>
+                                <div class="chat-bubble solid">{{ item.text }}</div>
+                                <div class="manager-avatar mini"></div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <div class="chat-inline-warning hidden" data-chat-empty-warning>Bạn chưa nhập nội dung tư vấn!</div>
+
+                    <form class="consultation-input-row" data-form-type="consultation-send">
+                        <input type="text" name="message" placeholder="Nhập nội dung tư vấn...">
+                        <button type="submit" class="chat-send-btn" aria-label="Gửi tin nhắn">
+                            <span class="chat-send-icon" aria-hidden="true"></span>
+                        </button>
+                    </form>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <div class="backdrop hidden" data-backdrop></div>
+
+    <section class="modal hidden modal-alert" id="consultation-send-error-modal" aria-hidden="true">
+        <div class="modal-panel alert-panel">
+            <div class="alert-icon">!</div>
+            <p>Không gửi được tin nhắn. Vui lòng thử lại!</p>
+            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
+        </div>
+    </section>
+
+    <script src="{% static 'js/service-dashboard.js' %}?v=6"></script>
+</body>
+</html>

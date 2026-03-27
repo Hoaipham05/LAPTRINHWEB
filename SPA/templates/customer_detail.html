@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi tiết tài khoản khách hàng | MAI TRÂM Beauty &amp; Spa</title>
-    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}?v=6">
 </head>
 <body>
     <div class="app-shell">
@@ -20,7 +20,7 @@
                     <span class="nav-icon nav-gear" aria-hidden="true"></span>
                     <span>Quản lý dịch vụ</span>
                 </a>
-                <a class="nav-item" href="#">
+                <a class="nav-item" href="{% url 'appointment_dashboard' %}">
                     <span class="nav-icon nav-calendar" aria-hidden="true"></span>
                     <span>Quản lý lịch hẹn</span>
                 </a>

@@ -18,6 +18,9 @@ from django.contrib import admin
 from django.urls import path
 
 from .views import (
+    appointment_dashboard,
+    consultation_dashboard,
+    consultation_detail,
     customer_dashboard,
     customer_detail,
     feedback_dashboard,
@@ -27,7 +30,10 @@ from .views import (
 
 urlpatterns = [
     path('', service_dashboard, name='service_dashboard'),
+    path('lich-hen/', appointment_dashboard, name='appointment_dashboard'),
     path('phan-hoi/', feedback_dashboard, name='feedback_dashboard'),
+    path('phan-hoi/tu-van/', consultation_dashboard, name='consultation_dashboard'),
+    path('phan-hoi/tu-van/<int:conversation_id>/', consultation_detail, name='consultation_detail'),
     path('phan-hoi/<int:feedback_id>/', feedback_detail, name='feedback_detail'),
     path('khach-hang/', customer_dashboard, name='customer_dashboard'),
     path('khach-hang/<int:customer_id>/', customer_detail, name='customer_detail'),

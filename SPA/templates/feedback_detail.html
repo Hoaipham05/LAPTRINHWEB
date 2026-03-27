@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phản hồi đánh giá | MAI TRÂM Beauty &amp; Spa</title>
-    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}?v=6">
 </head>
 <body>
     <div class="app-shell">
@@ -20,7 +20,7 @@
                     <span class="nav-icon nav-gear" aria-hidden="true"></span>
                     <span>Quản lý dịch vụ</span>
                 </a>
-                <a class="nav-item" href="#">
+                <a class="nav-item" href="{% url 'appointment_dashboard' %}">
                     <span class="nav-icon nav-calendar" aria-hidden="true"></span>
                     <span>Quản lý lịch hẹn</span>
                 </a>
@@ -31,7 +31,7 @@
                 <a class="nav-item sub-item active-sub" href="{% url 'feedback_dashboard' %}">
                     <span>Phản hồi đánh giá</span>
                 </a>
-                <a class="nav-item sub-item" href="#">
+                <a class="nav-item sub-item" href="{% url 'consultation_dashboard' %}">
                     <span>Tư vấn khách hàng</span>
                 </a>
                 <a class="nav-item" href="{% url 'customer_dashboard' %}">
@@ -67,8 +67,32 @@
                         </div>
                     </div>
                     <div class="feedback-meta-actions">
-                        <button class="select-like" type="button">Xử lý</button>
-                        <span class="status-badge yellow">{{ feedback.status }}</span>
+                        <div class="feedback-action-stack" data-feedback-action>
+                            <button class="action-trigger" type="button" data-action-toggle aria-expanded="false">
+                                <span class="action-dot pink"></span>
+                                <span>Xử lý</span>
+                                <span class="action-caret" aria-hidden="true"></span>
+                            </button>
+                            <div class="action-menu hidden" data-action-menu>
+                                <button type="button" class="action-option" data-action-value="violation">
+                                    <span class="action-dot pink"></span>
+                                    <span>Vi phạm</span>
+                                </button>
+                                <button type="button" class="action-option" data-action-value="deleted">
+                                    <span class="action-dot gray"></span>
+                                    <span>Xóa</span>
+                                </button>
+                            </div>
+                            <button type="button" class="action-chip hidden" data-selected-chip="violation">
+                                <span class="action-dot pink"></span>
+                                <span>Vi phạm</span>
+                            </button>
+                            <button type="button" class="action-chip hidden" data-selected-chip="deleted">
+                                <span class="action-dot gray"></span>
+                                <span>Xóa</span>
+                            </button>
+                        </div>
+                        <span class="status-badge yellow" data-feedback-status>{{ feedback.status }}</span>
                     </div>
                 </div>
 
@@ -83,42 +107,39 @@
                 </div>
             </section>
 
-            <form class="reply-box" data-form-type="reply-feedback">
-                <textarea name="reply" rows="5" placeholder="Nhập phản hồi của bạn....."></textarea>
-                <div class="reply-actions">
-                    <a class="secondary-btn" href="{% url 'feedback_dashboard' %}">Hủy</a>
-                    <button type="submit" class="primary-btn">Gửi</button>
-                </div>
-            </form>
+            <div class="detail-footer-actions">
+                <button type="button" class="secondary-btn action-save-btn" data-save-feedback>Lưu</button>
+                <a class="primary-btn muted" href="{% url 'feedback_dashboard' %}">Phản hồi</a>
+            </div>
         </main>
     </div>
 
     <div class="backdrop hidden" data-backdrop></div>
 
-    <section class="modal hidden modal-alert" id="reply-empty-modal" aria-hidden="true">
-        <div class="modal-panel alert-panel">
-            <div class="alert-icon">!</div>
-            <p>Nội dung rỗng. Vui lòng nhập lại phản hồi!</p>
-            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
-        </div>
-    </section>
-
-    <section class="modal hidden modal-alert" id="reply-failed-modal" aria-hidden="true">
-        <div class="modal-panel alert-panel">
-            <div class="alert-icon">!</div>
-            <p>Lưu phản hồi thất bại. Vui lòng thử lại sau!</p>
-            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
-        </div>
-    </section>
-
-    <section class="modal hidden modal-alert" id="reply-success-modal" aria-hidden="true">
+    <section class="modal hidden modal-alert" id="process-success-modal" aria-hidden="true">
         <div class="modal-panel alert-panel success-panel">
             <div class="success-icon"></div>
-            <p>Gửi phản hồi thành công!</p>
+            <p>Xử lý đánh giá thành công !</p>
             <button type="button" class="primary-btn" data-close-modal>Đóng</button>
         </div>
     </section>
 
-    <script src="{% static 'js/service-dashboard.js' %}"></script>
+    <section class="modal hidden modal-alert" id="process-failed-modal" aria-hidden="true">
+        <div class="modal-panel alert-panel">
+            <div class="alert-icon">!</div>
+            <p>Cập nhật thất bại. Vui lòng thử lại sau !</p>
+            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
+        </div>
+    </section>
+
+    <section class="modal hidden modal-alert" id="process-denied-modal" aria-hidden="true">
+        <div class="modal-panel alert-panel">
+            <div class="alert-icon">!</div>
+            <p>Bạn không có quyền xử lý !</p>
+            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
+        </div>
+    </section>
+
+    <script src="{% static 'js/service-dashboard.js' %}?v=6"></script>
 </body>
 </html>

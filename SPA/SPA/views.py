@@ -56,6 +56,97 @@ def service_dashboard(request):
     return render(request, "service_dashboard.html", {"services": services})
 
 
+def appointment_dashboard(request):
+    appointments = [
+        {
+            "id": 1,
+            "customer": "Nguyễn Thị Trà My",
+            "phone": "0901234567",
+            "service": "Trị mụn chuyên sâu",
+            "date": "25/02/2026",
+            "time": "16:00",
+            "status": "Đang Tiến Hành",
+            "status_class": "green",
+            "note": "Khách yêu cầu phòng riêng",
+        },
+        {
+            "id": 2,
+            "customer": "Phạm Thị Hoài",
+            "phone": "0905050323",
+            "service": "Triệt lông công nghệ Diode",
+            "date": "10/02/2026",
+            "time": "9:00",
+            "status": "Hoàn Thành",
+            "status_class": "blue",
+            "note": "Đã hoàn tất liệu trình theo lịch đặt",
+        },
+        {
+            "id": 3,
+            "customer": "Võ Bích Hợp",
+            "phone": "0328775385",
+            "service": "Gội đầu dưỡng sinh",
+            "date": "10/02/2026",
+            "time": "13:00",
+            "status": "Hoàn Thành",
+            "status_class": "blue",
+            "note": "Khách thanh toán tại quầy",
+        },
+        {
+            "id": 4,
+            "customer": "Nguyễn Thị Hoa",
+            "phone": "0384726564",
+            "service": "Post-Acne Recovery Therapy",
+            "date": "11/02/2026",
+            "time": "9:00",
+            "status": "Hoàn Thành",
+            "status_class": "blue",
+            "note": "Khách đặt lại lịch tái khám",
+        },
+        {
+            "id": 5,
+            "customer": "Lê Thị Bé Như",
+            "phone": "0376258537",
+            "service": "Acne Detox Therapy",
+            "date": "11/02/2026",
+            "time": "13:00",
+            "status": "Đã Hủy",
+            "status_class": "red",
+            "note": "Khách báo hủy trước 2 giờ",
+        },
+        {
+            "id": 6,
+            "customer": "Nguyễn Cao Sang",
+            "phone": "0387642458",
+            "service": "Acne Detox Therapy",
+            "date": "12/02/2026",
+            "time": "13:00",
+            "status": "Hoàn Thành",
+            "status_class": "blue",
+            "note": "Khách yêu cầu xuất hóa đơn",
+        },
+        {
+            "id": 7,
+            "customer": "Đoàn Thanh Nhã",
+            "phone": "0927462684",
+            "service": "Post-Acne Recovery Therapy",
+            "date": "9/02/2026",
+            "time": "7:00",
+            "status": "Đã Hủy",
+            "status_class": "red",
+            "note": "Khách đến trễ nên lịch bị hủy",
+        },
+    ]
+    modal_state = request.GET.get("modal", "")
+    return render(
+        request,
+        "appointment_dashboard.html",
+        {
+            "appointments": appointments,
+            "modal_state": modal_state,
+        },
+    )
+
+
 def customer_dashboard(request):
     customers = [
         {"id": 1, "name": "Nguyễn Thị Lan", "gender": "Nữ", "phone": "0901234567", "points": "500 điểm"},
@@ -132,6 +223,125 @@ def feedback_dashboard(request):
         },
     ]
     return render(request, "feedback_dashboard.html", {"feedbacks": feedbacks})
+
+
+def consultation_dashboard(request):
+    conversations = [
+        {
+            "id": 1,
+            "name": "Mai Hồng Ngọc",
+            "avatar_class": "chat-avatar-one",
+            "preview": "Cho em hỏi về dịch vụ bên mình bao nhiêu......",
+            "time": "19:30",
+        },
+        {
+            "id": 2,
+            "name": "Trần Thiên Hà",
+            "avatar_class": "avatar-neutral",
+            "preview": "Shop ơi tư vấn này giúp e với .....",
+            "time": "Hôm qua",
+        },
+        {
+            "id": 3,
+            "name": "Ngô Thanh Vân",
+            "avatar_class": "chat-avatar-two",
+            "preview": "Shop ơi tư vấn này giúp e với .....",
+            "time": "23/01/2026",
+        },
+        {
+            "id": 4,
+            "name": "Lê Thư Ý",
+            "avatar_class": "chat-avatar-three",
+            "preview": "Shop ơi",
+            "time": "23/01/2026",
+        },
+        {
+            "id": 5,
+            "name": "Lê Trà Thư",
+            "avatar_class": "avatar-neutral",
+            "preview": "Ngày mai nha",
+            "time": "23/01/2026",
+        },
+    ]
+    search = request.GET.get("q", "").strip()
+    empty_state = request.GET.get("empty", "") == "1"
+    if search:
+        lowered = search.lower()
+        conversations = [item for item in conversations if lowered in item["name"].lower()]
+    if empty_state:
+        conversations = []
+    return render(
+        request,
+        "consultation_dashboard.html",
+        {
+            "conversations": conversations,
+            "search": search,
+        },
+    )
+
+
+def consultation_detail(request, conversation_id):
+    conversations = {
+        1: {
+            "id": 1,
+            "name": "Mai Hồng Ngọc",
+            "avatar_class": "chat-avatar-one",
+            "messages": [
+                {"side": "left", "text": "Cho em hỏi về dịch vụ bên mình bao nhiêu......", "time": "19:30"},
+            ],
+        },
+        2: {
+            "id": 2,
+            "name": "Trần Thiên Hà",
+            "avatar_class": "avatar-neutral",
+            "messages": [
+                {"side": "left", "text": "Shop ơi tư vấn này giúp e với .....", "time": "Hôm qua"},
+            ],
+        },
+        3: {
+            "id": 3,
+            "name": "Ngô Thanh Vân",
+            "avatar_class": "chat-avatar-two",
+            "messages": [
+                {"divider": "Hôm qua 19:45"},
+                {"side": "left", "text": "Shop ơi tư vấn này giúp e với về gói chăm da với", "time": ""},
+                {
+                    "side": "right",
+                    "text": "Chào mừng bạn đến với dịch vụ Mai Trâm, bạn vui lòng đợi một chút sẽ có nhân viên tư vấn cho bạn ạ!",
+                    "time": "19:45",
+                },
+                {"divider": "10:50"},
+                {"side": "left", "text": "Shop ơi tư vấn ạ", "time": ""},
+                {"side": "right", "text": "Em đây ạ", "time": "10:52"},
+            ],
+        },
+        4: {
+            "id": 4,
+            "name": "Lê Thư Ý",
+            "avatar_class": "chat-avatar-three",
+            "messages": [
+                {"side": "left", "text": "Shop ơi", "time": "23/01/2026"},
+            ],
+        },
+        5: {
+            "id": 5,
+            "name": "Lê Trà Thư",
+            "avatar_class": "avatar-neutral",
+            "messages": [
+                {"side": "left", "text": "Ngày mai nha", "time": "23/01/2026"},
+            ],
+        },
+    }
+    conversation = conversations.get(conversation_id, conversations[3])
+    modal_state = request.GET.get("modal", "")
+    return render(
+        request,
+        "consultation_detail.html",
+        {
+            "conversation": conversation,
+            "modal_state": modal_state,
+        },
+    )
 
 
 def feedback_detail(request, feedback_id):
