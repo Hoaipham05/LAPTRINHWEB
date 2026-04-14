@@ -1,0 +1,209 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt lịch hẹn | Mai Trâm Beauty &amp; Spa</title>
+    <link rel="stylesheet" href="{% static 'css/booking.css' %}?v=2">
+</head>
+<body>
+    <div class="booking-page">
+        <header class="site-header">
+            <a class="brand" href="{% url 'home' %}">
+                <span class="brand-mark">MAI TRÂM</span>
+                <span class="brand-sub">Beauty &amp; Spa</span>
+            </a>
+
+            <nav class="site-nav" aria-label="Điều hướng chính">
+                <a class="site-nav__link" href="{% url 'home' %}">Dịch vụ</a>
+                <a class="site-nav__link" href="{% url 'consultation_dashboard' %}">Tư vấn</a>
+                <a class="site-nav__link" href="{% url 'feedback_dashboard' %}">Đánh giá</a>
+                <a class="site-nav__link" href="{% url 'profile' %}">Tài khoản</a>
+            </nav>
+
+            <a class="site-header__cta is-active" href="{% url 'booking' %}">Đặt lịch hẹn</a>
+        </header>
+
+        <main class="booking-main">
+            <section class="booking-board">
+                <div class="booking-board__tabs">
+                    <button class="booking-board__tab is-active" type="button" data-panel-target="booking-flow">Đặt lịch dịch vụ</button>
+                    <button class="booking-board__tab" type="button" data-panel-target="booking-history">Lịch đặt của tôi</button>
+                </div>
+
+                {% if messages %}
+                <div class="booking-flash">
+                    {% for message in messages %}
+                    <div class="booking-flash__item booking-flash__item--{{ message.tags|default:'info' }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="booking-panel is-active" id="booking-flow">
+                    <ol class="stepper" aria-label="Các bước đặt lịch">
+                        <li class="stepper__item is-active" data-step-indicator="1">
+                            <span class="stepper__number">1</span>
+                            <span class="stepper__label">Chọn dịch vụ</span>
+                        </li>
+                        <li class="stepper__item" data-step-indicator="2">
+                            <span class="stepper__number">2</span>
+                            <span class="stepper__label">Chọn gói</span>
+                        </li>
+                        <li class="stepper__item" data-step-indicator="3">
+                            <span class="stepper__number">3</span>
+                            <span class="stepper__label">Chọn thời gian</span>
+                        </li>
+                        <li class="stepper__item" data-step-indicator="4">
+                            <span class="stepper__number">4</span>
+                            <span class="stepper__label">Xác nhận</span>
+                        </li>
+                    </ol>
+
+                    <div class="booking-divider"></div>
+
+                    <section class="booking-step is-active" data-step="1">
+                        <div class="service-grid">
+                            {% for service in services %}
+                            <button
+                                class="service-card"
+                                type="button"
+                                data-service-card
+                                data-service-id="{{ service.id }}"
+                                data-service-name="{{ service.name }}"
+                                data-service-description="{{ service.description }}"
+                                data-service-duration="{{ service.duration }}"
+                                data-service-price="{{ service.price }}"
+                            >
+                                <span class="service-card__media tone-{{ service.tone }}"></span>
+                                <span class="service-card__body">
+                                    <span class="service-card__title">{{ service.name }}</span>
+                                    <span class="service-card__description">{{ service.description }}</span>
+                                    <span class="service-card__meta">
+                                        <span>⏱ {{ service.duration }}</span>
+                                        <span>★ {{ service.rating }}</span>
+                                    </span>
+                                    <span class="service-card__price">{{ service.price }}</span>
+                                </span>
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </section>
+
+                    <section class="booking-step" data-step="2">
+                        <div class="package-grid" id="package-grid"></div>
+                    </section>
+
+                    <section class="booking-step" data-step="3">
+                        <div class="schedule-layout">
+                            <article class="calendar-card">
+                                <h2 class="panel-title">Chọn ngày</h2>
+                                <div class="calendar-shell">
+                                    <div class="calendar-head">
+                                        <button type="button" class="calendar-arrow" aria-label="Tháng trước">‹</button>
+                                        <strong>{{ current_month_label }}</strong>
+                                        <button type="button" class="calendar-arrow" aria-label="Tháng sau">›</button>
+                                    </div>
+                                    <div class="calendar-weekdays">
+                                        <span>T2</span>
+                                        <span>T3</span>
+                                        <span>T4</span>
+                                        <span>T5</span>
+                                        <span>T6</span>
+                                        <span>T7</span>
+                                        <span>CN</span>
+                                    </div>
+                                    <div class="calendar-grid">
+                                        {% for day in calendar_days %}
+                                        <button
+                                            class="calendar-day{% if day.disabled %} is-disabled{% endif %}{% if day.is_today %} is-today{% endif %}"
+                                            type="button"
+                                            data-calendar-day
+                                            data-date="{{ day.iso }}"
+                                            {% if day.disabled %}disabled{% endif %}
+                                        >
+                                            {{ day.day }}
+                                        </button>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </article>
+
+                            <article class="timeslot-card">
+                                <h2 class="panel-title">Chọn giờ</h2>
+                                <div class="timeslot-shell">
+                                    <div class="timeslot-grid" id="timeslot-grid"></div>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section class="booking-step" data-step="4">
+                        <div class="confirm-layout">
+                            <article class="confirm-card">
+                                <h2 class="panel-title">Thông tin đặt lịch</h2>
+                                <div class="confirm-box">
+                                    <p><span>Dịch vụ:</span> <strong id="summary-service">Chưa chọn</strong></p>
+                                    <p><span>Gói dịch vụ:</span> <strong id="summary-package">Chưa chọn</strong></p>
+                                    <p><span>Số buổi:</span> <strong id="summary-sessions">Chưa chọn</strong></p>
+                                    <p><span>Ngày hẹn:</span> <strong id="summary-date">Chưa chọn</strong></p>
+                                    <p><span>Giờ hẹn:</span> <strong id="summary-time">Chưa chọn</strong></p>
+                                    <p><span>Chi phí:</span> <strong id="summary-price">Chưa chọn</strong></p>
+                                    <p><span>Mô tả gói:</span> <strong id="summary-result">Chưa chọn</strong></p>
+                                </div>
+                            </article>
+
+                            <article class="confirm-card">
+                                <h2 class="panel-title">Thông tin khách hàng</h2>
+                                <div class="confirm-box">
+                                    <p><span>Họ và tên:</span> <strong>{{ customer_info.full_name }}</strong></p>
+                                    <p><span>Số điện thoại:</span> <strong>{{ customer_info.phone }}</strong></p>
+                                    <p><span>Email:</span> <strong>{{ customer_info.email }}</strong></p>
+                                    <label class="note-field">
+                                        <span>Ghi chú</span>
+                                        <textarea rows="5" placeholder="Ghi chú thêm (nếu có)"></textarea>
+                                    </label>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <div class="booking-actions">
+                        <button class="secondary-btn" type="button" id="prev-step-btn" disabled>← Quay lại</button>
+                        <button class="primary-btn" type="button" id="next-step-btn">Tiếp theo →</button>
+                    </div>
+                </div>
+
+                <div class="booking-panel" id="booking-history">
+                    <div class="history-grid">
+                        {% for item in history %}
+                        <article class="history-card">
+                            <h3>{{ item.service }}</h3>
+                            <p>{{ item.schedule }}</p>
+                            <span>{{ item.status }}</span>
+                        </article>
+                        {% empty %}
+                        <article class="history-card history-card--empty">
+                            <h3>Chưa có lịch nào</h3>
+                            <p>Lịch đã đặt của bạn sẽ hiển thị tại đây.</p>
+                        </article>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <form id="booking-submit-form" method="post" action="{% url 'booking' %}" hidden>
+        {% csrf_token %}
+        <input type="hidden" name="service_id" id="booking-service-id">
+        <input type="hidden" name="package_id" id="booking-package-id">
+        <input type="hidden" name="appointment_date" id="booking-appointment-date">
+        <input type="hidden" name="appointment_time" id="booking-appointment-time">
+    </form>
+
+    {{ packages_by_service|json_script:"booking-packages-data" }}
+    {{ time_slots_by_date|json_script:"booking-slots-data" }}
+    <script src="{% static 'js/booking.js' %}?v=2"></script>
+</body>
+</html>
