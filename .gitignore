@@ -1,0 +1,26 @@
+# Python / Django
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Local Django database in this repo
+SPA/db.sqlite3
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / OS files
+.idea/
+.vscode/
+Thumbs.db
+.DS_Store
+
+# Logs and caches
+*.log
+.pytest_cache/
+.coverage
+

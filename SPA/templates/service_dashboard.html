@@ -5,36 +5,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý dịch vụ | MAI TRÂM Beauty &amp; Spa</title>
-    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}?v=7">
+    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}?v=6">
+    <link rel="stylesheet" href="{% static 'css/dashboard-topnav-footer.css' %}?v=1">
 </head>
-<body>
+<body class="admin-top-layout">
     <div class="app-shell">
-        {% include 'includes/manager_nav.html' %}
-        {% comment %}<aside class="sidebar">
-            <div class="brand">
+        <header class="dashboard-header">
+            <a class="brand horizontal-brand" href="{% url 'service_dashboard' %}">
                 <h1>MAI TRÂM</h1>
                 <p>Beauty &amp; Spa</p>
-            </div>
+            </a>
 
-            <nav class="sidebar-nav">
+            <nav class="top-nav">
                 <a class="nav-item active" href="{% url 'service_dashboard' %}">
-                    <span class="nav-icon nav-gear" aria-hidden="true"></span>
-                    <span>Quản lý dịch vụ</span>
+                    <span>Dịch vụ</span>
                 </a>
                 <a class="nav-item" href="{% url 'appointment_dashboard' %}">
-                    <span class="nav-icon nav-calendar" aria-hidden="true"></span>
-                    <span>Quản lý lịch hẹn</span>
-                </a>
-                <a class="nav-item" href="{% url 'feedback_dashboard' %}">
-                    <span class="nav-icon nav-reply" aria-hidden="true"></span>
-                    <span>Quản lý phản hồi</span>
+                    <span>Lịch hẹn</span>
                 </a>
                 <a class="nav-item" href="{% url 'customer_dashboard' %}">
-                    <span class="nav-icon nav-user" aria-hidden="true"></span>
-                    <span>Quản lý khách hàng</span>
+                    <span>Khách hàng</span>
                 </a>
+                <div class="nav-dropdown">
+                    <button type="button" class="nav-item nav-dropdown-toggle" aria-expanded="false" data-nav-toggle>
+                        <span>Phản hồi</span>
+                        <span class="dropdown-caret" aria-hidden="true"></span>
+                    </button>
+                    <div class="nav-submenu" data-nav-submenu>
+                        <a class="nav-subitem" href="{% url 'consultation_dashboard' %}">Tư vấn</a>
+                    </div>
+                </div>
             </nav>
-        </aside>{% endcomment %}
+
+            <div class="manager-card manager-card-top">
+                <div class="manager-avatar"></div>
+                <span>Quản lý</span>
+            </div>
+        </header>
 
         <main class="main-content">
             <header class="topbar">
@@ -44,11 +51,6 @@
                         <p>Xem, thêm, sửa và cập nhật thông tin các dịch vụ</p>
                     </div>
                     <button class="primary-btn" data-modal-target="add-service-modal">+ Thêm dịch vụ</button>
-                </div>
-
-                <div class="manager-card">
-                    <div class="manager-avatar"></div>
-                    <span>Quản Lý</span>
                 </div>
             </header>
 
@@ -70,7 +72,16 @@
                                 <div class="service-cell">
                                     <div class="service-thumb {{ service.image_class }}">
                                         {% if service.image_url %}
-                                        <img src="{{ service.image_url }}" alt="{{ service.name }}" onerror="this.remove()">
+                                        <img
+                                            src="{{ service.image_url }}"
+                                            alt="{{ service.name }}"
+                                            width="42"
+                                            height="42"
+                                            loading="lazy"
+                                            referrerpolicy="no-referrer"
+                                            style="width:100%;height:100%;object-fit:cover;display:block;"
+                                            onerror="this.onerror=null;this.src='{% static 'images/service-fallback.svg' %}';"
+                                        >
                                         {% endif %}
                                     </div>
                                     <span>{{ service.name }}</span>
@@ -92,6 +103,43 @@
                 </table>
             </section>
         </main>
+
+        <footer class="dashboard-footer">
+            <section class="footer-col intro">
+                <h3>Mai Trâm Spa</h3>
+                <p>Nơi vẻ đẹp thăng hoa - Chăm sóc sắc đẹp toàn diện với công nghệ hiện đại và đội ngũ chuyên gia hàng đầu.</p>
+                <div class="socials">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">ig</a>
+                    <a href="#" aria-label="Tumblr">t</a>
+                </div>
+            </section>
+
+            <section class="footer-col">
+                <h3>Dịch vụ</h3>
+                <p>Chăm sóc da mặt</p>
+                <p>Massage body</p>
+                <p>Triệt lông</p>
+                <p>Điều trị mụn</p>
+                <p>Tắm trắng</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Về chúng tôi</h3>
+                <p>Giới thiệu</p>
+                <p>Đội ngũ</p>
+                <p>Tin tức</p>
+                <p>Liên hệ</p>
+                <p>Tuyển dụng</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Liên hệ</h3>
+                <p>104/7 Lê Đình Lý, Thanh Khê, Đà Nẵng</p>
+                <p>0901 234 589</p>
+                <p>info@maitram.spa</p>
+            </section>
+        </footer>
     </div>
 
     <div class="backdrop hidden" data-backdrop></div>
@@ -270,6 +318,7 @@
         </div>
     </section>
 
+    <script src="{% static 'js/topnav-dropdown.js' %}?v=1"></script>
     <script src="{% static 'js/service-dashboard.js' %}?v=6"></script>
 </body>
 </html>
