@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dịch vụ | Mai Trâm Spa</title>
+    <link rel="stylesheet" href="{% static 'css/see_service.css' %}?v=2">
+</head>
+<body>
+    <div class="page-shell">
+        <header class="header">
+            <a class="logo" href="{% url 'see_service' %}">
+                <h1>MAI TRÂM</h1>
+                <span>Beauty &amp; Spa</span>
+            </a>
+
+            <nav class="nav">
+                <a class="active" href="{% url 'see_service' %}">Dịch vụ</a>
+                <a href="{% url 'consultation_dashboard' %}">Tư vấn</a>
+                <a href="{% url 'feedback_dashboard' %}">Đánh giá</a>
+                <a href="{% url 'customer_dashboard' %}">Tài khoản</a>
+            </nav>
+
+            <a class="btn-book" href="{% url 'appointment_dashboard' %}">Đặt lịch hẹn</a>
+        </header>
+
+        <main class="main-content">
+            <section class="filter-bar">
+                <div class="search-box">
+                    <span class="search-icon" aria-hidden="true"></span>
+                    <input type="search" id="search" placeholder="Tìm dịch vụ bạn muốn">
+                </div>
+
+                <div class="filter-actions">
+                    <button class="filter-chip active" type="button" data-category="all">Tất cả</button>
+                    <button class="filter-chip" type="button" data-category="face">Da mặt</button>
+                    <button class="filter-chip" type="button" data-category="body">Body</button>
+                    <button class="filter-chip" type="button" data-category="hair">Triệt lông</button>
+
+                    <label class="price-select">
+                        <span>Giá</span>
+                        <select id="priceSort" aria-label="Sắp xếp theo giá">
+                            <option value="default">Mặc định</option>
+                            <option value="asc">Thấp đến cao</option>
+                            <option value="desc">Cao đến thấp</option>
+                        </select>
+                    </label>
+                </div>
+            </section>
+
+            <section class="services" id="serviceList">
+                {% for service in services %}
+                <article class="card" data-category="{{ service.category }}" data-price="{{ service.price }}" data-name="{{ service.name }}">
+                    <img src="{{ service.image_url }}" alt="{{ service.name }}">
+                    <div class="card-body">
+                        <div class="card-head">
+                            <h3>{{ service.name }}</h3>
+                            <span class="rating">&#9733; {{ service.rating }}</span>
+                        </div>
+                        <p class="description">{{ service.short_description }}</p>
+                        <div class="meta">
+                            <span>{{ service.duration_minutes }} phút</span>
+                        </div>
+                        <div class="card-footer">
+                            <strong>Từ {{ service.price_label }}đ</strong>
+                            <a href="{% url 'service_detail' service.slug %}">Xem chi tiết <span>&rarr;</span></a>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <p class="empty-inline">Chưa có dịch vụ nào đang hoạt động.</p>
+                {% endfor %}
+            </section>
+
+            <section class="empty-state hidden" id="emptyState">
+                <h3>Không tìm thấy dịch vụ phù hợp</h3>
+                <p>Hãy thử lại với từ khóa hoặc bộ lọc khác.</p>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <section class="footer-col intro">
+                <h3>Mai Trâm Spa</h3>
+                <p>Nơi vẻ đẹp thăng hoa với các liệu trình chăm sóc da, body và triệt lông theo quy trình chuyên nghiệp.</p>
+                <div class="socials">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">ig</a>
+                    <a href="#" aria-label="Twitter">x</a>
+                </div>
+            </section>
+
+            <section class="footer-col">
+                <h3>Dịch vụ</h3>
+                <p>Chăm sóc da mặt</p>
+                <p>Massage body</p>
+                <p>Triệt lông</p>
+                <p>Điều trị mụn</p>
+                <p>Xông hơi</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Về chúng tôi</h3>
+                <p>Giới thiệu</p>
+                <p>Đội ngũ</p>
+                <p>Tin tức</p>
+                <p>Liên hệ</p>
+                <p>Tuyển dụng</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Liên hệ</h3>
+                <p>104/7 Lê Đình Lý, Thanh Khê, Đà Nẵng</p>
+                <p>0901 234 589</p>
+                <p>info@maitram.spa</p>
+            </section>
+        </footer>
+    </div>
+
+    <script src="{% static 'js/see_service.js' %}?v=2"></script>
+</body>
+</html>
