@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff7f8"/>
+      <stop offset="100%" stop-color="#ffd7d2"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g1)"/>
+  <ellipse cx="620" cy="320" rx="260" ry="190" fill="#ffe8e4"/>
+  <circle cx="540" cy="280" r="92" fill="#fffdfd"/>
+  <circle cx="700" cy="285" r="68" fill="#ffd3cd"/>
+  <rect x="170" y="468" width="860" height="86" rx="24" fill="#ffffff" opacity="0.82"/>
+  <text x="600" y="523" text-anchor="middle" font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif" font-size="42" font-weight="700" fill="#d75d7a">Cham soc da mat Collagen</text>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff3eb"/>
+      <stop offset="100%" stop-color="#f2c39d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g3)"/>
+  <ellipse cx="620" cy="305" rx="290" ry="170" fill="#ffe6d3"/>
+  <rect x="400" y="250" width="360" height="90" rx="45" fill="#fff7f0"/>
+  <circle cx="810" cy="245" r="42" fill="#ffedd9"/>
+  <circle cx="840" cy="222" r="16" fill="#fff"/>
+  <rect x="180" y="468" width="840" height="86" rx="24" fill="#ffffff" opacity="0.82"/>
+  <text x="600" y="523" text-anchor="middle" font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif" font-size="44" font-weight="700" fill="#c66a54">Massage body thu gian</text>
+</svg>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7f8fc"/>
+      <stop offset="100%" stop-color="#d8e0f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g4)"/>
+  <ellipse cx="560" cy="310" rx="300" ry="165" fill="#edf2fa"/>
+  <rect x="360" y="240" width="300" height="120" rx="60" fill="#fff"/>
+  <rect x="660" y="210" width="80" height="180" rx="40" fill="#d2def6"/>
+  <rect x="180" y="468" width="840" height="86" rx="24" fill="#ffffff" opacity="0.82"/>
+  <text x="600" y="523" text-anchor="middle" font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif" font-size="42" font-weight="700" fill="#5f78a6">Triet long laser IPL</text>
+</svg>

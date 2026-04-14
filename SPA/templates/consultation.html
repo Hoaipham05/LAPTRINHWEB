@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tư vấn | Mai Trâm Beauty &amp; Spa</title>
+    <link rel="stylesheet" href="{% static 'css/consultation.css' %}?v=1">
+</head>
+<body data-chat-open="{% if chat_open %}1{% else %}0{% endif %}">
+    <div class="consultation-page">
+        <header class="site-header">
+            <a class="brand" href="{% url 'home' %}">
+                <span class="brand-mark">MAI TRÂM</span>
+                <span class="brand-sub">Beauty &amp; Spa</span>
+            </a>
+
+            <nav class="site-nav" aria-label="Điều hướng chính">
+                <a class="site-nav__link" href="{% url 'home' %}">Dịch vụ</a>
+                <a class="site-nav__link is-active" href="{% url 'consultation_page' %}">Tư vấn</a>
+                <a class="site-nav__link" href="{% url 'feedback_dashboard' %}">Đánh giá</a>
+                <a class="site-nav__link" href="{% url 'profile' %}">Tài khoản</a>
+            </nav>
+
+            <a class="site-header__cta" href="{% url 'booking' %}">Đặt lịch hẹn</a>
+        </header>
+
+        <main class="consultation-main">
+            {% if messages %}
+            <div class="page-flash">
+                {% for message in messages %}
+                <div class="page-flash__item page-flash__item--{{ message.tags|default:'info' }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <section class="faq-board">
+                <div class="faq-board__scroll">
+                    {% for faq in faqs %}
+                    <article class="faq-row">
+                        <div class="faq-row__question">{{ faq.question }}</div>
+                        <div class="faq-row__answer">{{ faq.answer }}</div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <div class="site-footer__grid">
+                <section class="site-footer__brand">
+                    <h2>Mai Trâm Spa</h2>
+                    <p>Nơi vẻ đẹp thăng hoa - Chăm sóc sắc đẹp toàn diện với công nghệ hiện đại và đội ngũ chuyên gia hàng đầu.</p>
+                    <div class="site-footer__social">
+                        <a href="#" aria-label="Facebook">f</a>
+                        <a href="#" aria-label="Instagram">ig</a>
+                        <a href="#" aria-label="Twitter">t</a>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Dịch vụ</h3>
+                    <ul class="site-footer__links">
+                        <li><a href="#">Chăm sóc da mặt</a></li>
+                        <li><a href="#">Massage body</a></li>
+                        <li><a href="#">Triệt lông</a></li>
+                        <li><a href="#">Điều trị mụn</a></li>
+                        <li><a href="#">Tắm trắng</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Về chúng tôi</h3>
+                    <ul class="site-footer__links">
+                        <li><a href="#">Giới thiệu</a></li>
+                        <li><a href="#">Đội ngũ</a></li>
+                        <li><a href="#">Tin tức</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="#">Tuyển dụng</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Liên hệ</h3>
+                    <ul class="site-footer__contact">
+                        <li>104/7 Lê Đình Lý, Thanh Khê, Đà Nẵng</li>
+                        <li>0901 234 589</li>
+                        <li>info@maitram.spa</li>
+                    </ul>
+                </section>
+            </div>
+        </footer>
+    </div>
+
+    <button class="chat-launcher" type="button" id="chat-launcher" aria-label="Mở tư vấn">
+        <span></span>
+    </button>
+
+    <aside class="chat-panel" id="chat-panel" aria-hidden="true">
+        <div class="chat-panel__header">
+            <div class="chat-panel__brand">
+                <div class="chat-panel__avatar">MT</div>
+                <div>
+                    <strong>Mai Trâm Spa</strong>
+                    <span>Phản hồi trong giờ làm việc</span>
+                </div>
+            </div>
+            <button class="chat-panel__close" type="button" id="chat-close" aria-label="Đóng chat">×</button>
+        </div>
+
+        <div class="chat-panel__messages" id="chat-messages">
+            {% if chat_messages %}
+                {% for item in chat_messages %}
+                <div class="chat-bubble chat-bubble--{{ item.sender }}">
+                    <div class="chat-bubble__content">{{ item.content }}</div>
+                    <div class="chat-bubble__time">{{ item.created_at|date:"H:i" }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="chat-bubble chat-bubble--spa">
+                    <div class="chat-bubble__content">Chào mừng bạn đến với dịch vụ Mai Trâm. Bạn cứ nhắn câu hỏi, spa sẽ tư vấn ngay trong khung chat này.</div>
+                    <div class="chat-bubble__time">Bây giờ</div>
+                </div>
+            {% endif %}
+        </div>
+
+        <form class="chat-panel__form" method="post" action="{% url 'consultation_page' %}">
+            {% csrf_token %}
+            <input type="text" name="message" placeholder="Nhập tin nhắn" autocomplete="off">
+            <button type="submit" aria-label="Gửi tin nhắn">➤</button>
+        </form>
+    </aside>
+
+    <script src="{% static 'js/consultation.js' %}?v=1"></script>
+</body>
+</html>

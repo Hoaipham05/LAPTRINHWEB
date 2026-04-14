@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết tài khoản khách hàng | MAI TRÂM Beauty &amp; Spa</title>
+    <link rel="stylesheet" href="{% static 'css/service-dashboard.css' %}?v=6">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>MAI TRÂM</h1>
+                <p>Beauty &amp; Spa</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="nav-item" href="{% url 'service_dashboard' %}">
+                    <span class="nav-icon nav-gear" aria-hidden="true"></span>
+                    <span>Quản lý dịch vụ</span>
+                </a>
+                <a class="nav-item" href="{% url 'appointment_dashboard' %}">
+                    <span class="nav-icon nav-calendar" aria-hidden="true"></span>
+                    <span>Quản lý lịch hẹn</span>
+                </a>
+                <a class="nav-item" href="{% url 'feedback_dashboard' %}">
+                    <span class="nav-icon nav-reply" aria-hidden="true"></span>
+                    <span>Quản lý phản hồi</span>
+                </a>
+                <a class="nav-item active" href="{% url 'customer_dashboard' %}">
+                    <span class="nav-icon nav-user" aria-hidden="true"></span>
+                    <span>Quản lý khách hàng</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="heading-card">
+                    <div>
+                        <h2>Quản lý tài khoản khách hàng</h2>
+                        <p>Theo dõi, tra cứu và quản lý thông tin tài khoản khách hàng</p>
+                    </div>
+                </div>
+
+                <div class="manager-card">
+                    <div class="manager-avatar"></div>
+                    <span>Quản Lý</span>
+                </div>
+            </header>
+
+            <section class="detail-panel">
+                <div class="detail-header">
+                    <h3>Chi Tiết Tài Khoản Khách Hàng</h3>
+                </div>
+
+                <section class="detail-section">
+                    <h4 class="detail-title">
+                        <span class="user-dot"></span>
+                        Thông Tin Cá Nhân
+                    </h4>
+                    <div class="detail-grid three">
+                        <div class="info-card">
+                            <span>Họ Tên</span>
+                            <strong>{{ customer.name }}</strong>
+                        </div>
+                        <div class="info-card">
+                            <span>Giới Tính</span>
+                            <strong>{{ customer.gender }}</strong>
+                        </div>
+                        <div class="info-card narrow">
+                            <span>Tuổi</span>
+                            <strong>{{ customer.age }}</strong>
+                        </div>
+                    </div>
+                    <div class="detail-grid two stacked">
+                        <div class="info-card wide">
+                            <span>Email</span>
+                            <strong>{{ customer.email }}</strong>
+                        </div>
+                        <div class="info-card wide">
+                            <span>Địa Chỉ</span>
+                            <strong>{{ customer.address }}</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="detail-section">
+                    <h4 class="detail-title">
+                        <span class="history-icon"></span>
+                        Lịch Sử Dịch Vụ Đã Sử Dụng
+                    </h4>
+                    <table class="service-table detail-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Dịch Vụ</th>
+                                <th>Trạng Thái</th>
+                                <th>Giá</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in customer.history %}
+                            <tr>
+                                <td>{{ item.date }}</td>
+                                <td>{{ item.service }}</td>
+                                <td><span class="status-pill blue">{{ item.status }}</span></td>
+                                <td>{{ item.price }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </section>
+
+                <div class="detail-actions">
+                    <a class="primary-btn" href="{% url 'customer_dashboard' %}">Đóng</a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

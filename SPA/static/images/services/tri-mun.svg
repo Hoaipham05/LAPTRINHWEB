@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff8fb"/>
+      <stop offset="100%" stop-color="#efd5df"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g2)"/>
+  <circle cx="620" cy="280" r="170" fill="#fdf1f5"/>
+  <circle cx="560" cy="270" r="85" fill="#fff"/>
+  <rect x="685" y="225" width="64" height="130" rx="32" fill="#f8d2de"/>
+  <rect x="760" y="205" width="32" height="170" rx="16" fill="#ffffff"/>
+  <rect x="180" y="468" width="840" height="86" rx="24" fill="#ffffff" opacity="0.82"/>
+  <text x="600" y="523" text-anchor="middle" font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif" font-size="44" font-weight="700" fill="#c45786">Tri mun chuyen sau</text>
+</svg>
