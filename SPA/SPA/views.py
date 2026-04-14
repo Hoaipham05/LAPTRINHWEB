@@ -1,9 +1,64 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import LoginForm, RegisterForm
+from .forms import CustomerProfileForm, LoginForm, RegisterForm
+from services.models import CustomerProfile, Service
+
+
+def format_service_price(value):
+    return f"{value:,}".replace(",", ".")
+
+
+def category_label(category):
+    labels = {
+        Service.CATEGORY_FACE: "Da mat",
+        Service.CATEGORY_BODY: "Body",
+        Service.CATEGORY_HAIR: "Triet long",
+    }
+    return labels.get(category, category)
+
+
+def serialize_service(service):
+    return {
+        "id": service.id,
+        "name": service.name,
+        "slug": service.slug,
+        "short_description": service.short_description,
+        "description": service.description,
+        "category": service.category,
+        "category_label": category_label(service.category),
+        "duration_minutes": service.duration_minutes,
+        "price": service.price,
+        "price_label": format_service_price(service.price),
+        "rating": service.rating,
+        "image_url": service.image_url,
+        "status": service.status,
+    }
+
+
+def build_customer_history():
+    return [
+        {
+            "date": "12/03/2026",
+            "service": "Cham soc da mat Collagen",
+            "status": "Hoan thanh",
+            "price": "1.200.000d",
+        },
+        {
+            "date": "27/02/2026",
+            "service": "Massage body thu gian",
+            "status": "Hoan thanh",
+            "price": "500.000d",
+        },
+        {
+            "date": "08/02/2026",
+            "service": "Tri mun chuyen sau",
+            "status": "Hoan thanh",
+            "price": "800.000d",
+        },
+    ]
 
 
 def get_public_reviews():
@@ -75,7 +130,7 @@ def user_login(request):
         if request.user.is_staff:
             return redirect('service_dashboard')
         # Nếu là người dùng thường, vào customer_dashboard
-        return redirect('about_page')
+        return redirect('customer_account')
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -94,7 +149,7 @@ def user_login(request):
                     if user.is_staff:
                         return redirect('service_dashboard')
                     # Nếu là người dùng thường, vào customer_dashboard
-                    return redirect('about_page')
+                    return redirect('customer_account')
                 else:
                     messages.error(request, 'Mật khẩu không chính xác.')
             except User.DoesNotExist:
@@ -113,7 +168,7 @@ def user_register(request):
         if request.user.is_staff:
             return redirect('service_dashboard')
         # Nếu là người dùng thường, vào customer_dashboard
-        return redirect('about_page')
+        return redirect('customer_account')
 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -121,6 +176,15 @@ def user_register(request):
             user = form.save(commit=False)
             user.username = form.cleaned_data.get('email')
             user.save()
+            CustomerProfile.objects.get_or_create(
+                user=user,
+                defaults={
+                    "full_name": f"{user.last_name} {user.first_name}".strip(),
+                    "member_since": user.date_joined.date(),
+                    "loyalty_points": 120,
+                    "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+                },
+            )
 
             messages.success(request, 'Đăng ký thành công! Vui lòng đăng nhập.')
             return redirect('user_login')
@@ -935,3 +999,62 @@ def public_review_page(request):
         "with_images": with_images,
     }
     return render(request, "public_reviews.html", context)
+
+
+@login_required
+def customer_account(request):
+    profile, _ = CustomerProfile.objects.get_or_create(
+        user=request.user,
+        defaults={
+            "full_name": f"{request.user.last_name} {request.user.first_name}".strip() or request.user.username,
+            "member_since": request.user.date_joined.date(),
+            "loyalty_points": 320,
+            "avatar_url": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+        },
+    )
+
+    if request.method == "POST":
+        form = CustomerProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            profile = form.save()
+            request.user.first_name = form.cleaned_data["full_name"]
+            request.user.save(update_fields=["first_name"])
+            messages.success(request, "Thong tin tai khoan da duoc cap nhat.")
+            return redirect("customer_account")
+    else:
+        form = CustomerProfileForm(instance=profile)
+
+    context = {
+        "form": form,
+        "profile": profile,
+        "history_items": build_customer_history(),
+        "active_tab": request.GET.get("tab", "profile"),
+        "member_since_label": profile.member_since.strftime("%m/%Y") if profile.member_since else "",
+        "display_name": profile.display_name,
+    }
+    return render(request, "customer_account.html", context)
+
+
+def see_service(request):
+    services = [
+        serialize_service(service)
+        for service in Service.objects.filter(status=Service.STATUS_ACTIVE)
+    ]
+    return render(request, "see_service.html", {"services": services})
+
+
+def service_detail(request, slug):
+    service = get_object_or_404(Service, slug=slug, status=Service.STATUS_ACTIVE)
+    related_services = [
+        serialize_service(item)
+        for item in Service.objects.filter(status=Service.STATUS_ACTIVE, category=service.category)
+        .exclude(pk=service.pk)[:3]
+    ]
+    return render(
+        request,
+        "service_detail.html",
+        {
+            "service": serialize_service(service),
+            "related_services": related_services,
+        },
+    )
