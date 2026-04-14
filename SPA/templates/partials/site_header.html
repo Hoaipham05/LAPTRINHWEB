@@ -1,0 +1,15 @@
+<header class="site-header">
+    <a class="brand" href="{% url 'home' %}">
+        <span class="brand-mark">MAI TRÂM</span>
+        <span class="brand-sub">Beauty &amp; Spa</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Điều hướng chính">
+        <a class="site-nav__link{% if active_nav == 'services' %} is-active{% endif %}" href="{% url 'home' %}">Dịch vụ</a>
+        <a class="site-nav__link{% if active_nav == 'consultation' %} is-active{% endif %}" href="{% url 'consultation_page' %}">Tư vấn</a>
+        <a class="site-nav__link{% if active_nav == 'feedback' %} is-active{% endif %}" href="{% url 'feedback_dashboard' %}">Đánh giá</a>
+        <a class="site-nav__link{% if active_nav == 'account' %} is-active{% endif %}" href="{% url 'profile' %}">Tài khoản</a>
+    </nav>
+
+    <a class="site-header__cta{% if active_cta == 'booking' %} is-active{% endif %}" href="{% url 'booking' %}">Đặt lịch hẹn</a>
+</header>

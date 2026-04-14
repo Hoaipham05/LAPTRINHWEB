@@ -9,21 +9,7 @@
 </head>
 <body data-chat-open="{% if chat_open %}1{% else %}0{% endif %}">
     <div class="consultation-page">
-        <header class="site-header">
-            <a class="brand" href="{% url 'home' %}">
-                <span class="brand-mark">MAI TRÂM</span>
-                <span class="brand-sub">Beauty &amp; Spa</span>
-            </a>
-
-            <nav class="site-nav" aria-label="Điều hướng chính">
-                <a class="site-nav__link" href="{% url 'home' %}">Dịch vụ</a>
-                <a class="site-nav__link is-active" href="{% url 'consultation_page' %}">Tư vấn</a>
-                <a class="site-nav__link" href="{% url 'feedback_dashboard' %}">Đánh giá</a>
-                <a class="site-nav__link" href="{% url 'profile' %}">Tài khoản</a>
-            </nav>
-
-            <a class="site-header__cta" href="{% url 'booking' %}">Đặt lịch hẹn</a>
-        </header>
+        {% include 'partials/site_header.html' with active_nav='consultation' %}
 
         <main class="consultation-main">
             {% if messages %}
@@ -46,50 +32,7 @@
             </section>
         </main>
 
-        <footer class="site-footer">
-            <div class="site-footer__grid">
-                <section class="site-footer__brand">
-                    <h2>Mai Trâm Spa</h2>
-                    <p>Nơi vẻ đẹp thăng hoa - Chăm sóc sắc đẹp toàn diện với công nghệ hiện đại và đội ngũ chuyên gia hàng đầu.</p>
-                    <div class="site-footer__social">
-                        <a href="#" aria-label="Facebook">f</a>
-                        <a href="#" aria-label="Instagram">ig</a>
-                        <a href="#" aria-label="Twitter">t</a>
-                    </div>
-                </section>
-
-                <section>
-                    <h3>Dịch vụ</h3>
-                    <ul class="site-footer__links">
-                        <li><a href="#">Chăm sóc da mặt</a></li>
-                        <li><a href="#">Massage body</a></li>
-                        <li><a href="#">Triệt lông</a></li>
-                        <li><a href="#">Điều trị mụn</a></li>
-                        <li><a href="#">Tắm trắng</a></li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h3>Về chúng tôi</h3>
-                    <ul class="site-footer__links">
-                        <li><a href="#">Giới thiệu</a></li>
-                        <li><a href="#">Đội ngũ</a></li>
-                        <li><a href="#">Tin tức</a></li>
-                        <li><a href="#">Liên hệ</a></li>
-                        <li><a href="#">Tuyển dụng</a></li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h3>Liên hệ</h3>
-                    <ul class="site-footer__contact">
-                        <li>104/7 Lê Đình Lý, Thanh Khê, Đà Nẵng</li>
-                        <li>0901 234 589</li>
-                        <li>info@maitram.spa</li>
-                    </ul>
-                </section>
-            </div>
-        </footer>
+        {% include 'partials/site_footer.html' %}
     </div>
 
     <button class="chat-launcher" type="button" id="chat-launcher" aria-label="Mở tư vấn">
