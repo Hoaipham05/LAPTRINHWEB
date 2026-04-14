@@ -37,13 +37,35 @@ function normalizePrice(value) {
     return Number(value.replace(/\./g, "").replace(/\s/g, ""));
 }
 
+function normalizeServiceName(value) {
+    return value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function getExistingServiceNames() {
+    return Array.from(document.querySelectorAll(".service-cell span"))
+        .map((node) => normalizeServiceName(node.textContent))
+        .filter(Boolean);
+}
+
 function validateForm(form) {
     const formType = form.dataset.formType;
+    const allowedImageTypes = ["image/png", "image/jpeg", "image/webp"];
+    const maxImageSize = 5 * 1024 * 1024;
+    const existingServiceNames = getExistingServiceNames();
 
     if (formType === "add-service" || formType === "edit-service") {
         const name = form.querySelector('[name="name"]').value.trim();
         const description = form.querySelector('[name="description"]').value.trim();
         const price = normalizePrice(form.querySelector('[name="price"]').value.trim());
+        const imageInput = form.querySelector('.upload-input[name="image"]');
+        const imageFile = imageInput && imageInput.files ? imageInput.files[0] : null;
 
         if (!name) {
             return "error-empty-name";
@@ -53,6 +75,15 @@ function validateForm(form) {
         }
         if (!Number.isFinite(price) || price <= 0) {
             return "error-invalid-price";
+        }
+        if (formType === "add-service" && existingServiceNames.includes(normalizeServiceName(name))) {
+            return "error-duplicate-service";
+        }
+        if (imageFile && !allowedImageTypes.includes(imageFile.type)) {
+            return "error-invalid-image-type";
+        }
+        if (imageFile && imageFile.size > maxImageSize) {
+            return "error-image-too-large";
         }
         return "success-save-service";
     }
@@ -87,6 +118,41 @@ document.querySelectorAll("form[data-form-type]").forEach((form) => {
         }
 
         openModal(validateForm(form));
+    });
+});
+
+document.querySelectorAll(".upload-input").forEach((input) => {
+    const uploadBox = input.closest(".upload-box");
+    if (!uploadBox) {
+        return;
+    }
+
+    const fileName = uploadBox.querySelector("[data-file-name]");
+    const preview = uploadBox.querySelector("[data-upload-preview]");
+    const previewImage = preview ? preview.querySelector("img") : null;
+
+    input.addEventListener("change", () => {
+        const [file] = input.files || [];
+
+        if (!file) {
+            if (fileName) {
+                fileName.textContent = "Chưa chọn tệp nào";
+            }
+            if (preview && previewImage) {
+                preview.classList.add("hidden");
+                previewImage.src = "";
+            }
+            return;
+        }
+
+        if (fileName) {
+            fileName.textContent = file.name;
+        }
+
+        if (preview && previewImage) {
+            previewImage.src = URL.createObjectURL(file);
+            preview.classList.remove("hidden");
+        }
     });
 });
 
@@ -199,6 +265,33 @@ if (appointmentRows.length) {
 }
 
 const consultationForm = document.querySelector('form[data-form-type="consultation-send"]');
+const conversationLinks = document.querySelectorAll("[data-conversation-id]");
+
+if (conversationLinks.length) {
+    const storageKey = "spa-read-conversations";
+    let readIds = [];
+
+    try {
+        readIds = JSON.parse(window.localStorage.getItem(storageKey) || "[]");
+    } catch (error) {
+        readIds = [];
+    }
+
+    const readSet = new Set(readIds.map((id) => String(id)));
+
+    conversationLinks.forEach((link) => {
+        const conversationId = String(link.dataset.conversationId);
+
+        if (readSet.has(conversationId)) {
+            link.classList.remove("is-unread");
+        }
+
+        link.addEventListener("click", () => {
+            readSet.add(conversationId);
+            window.localStorage.setItem(storageKey, JSON.stringify(Array.from(readSet)));
+        });
+    });
+}
 
 if (consultationForm) {
     const input = consultationForm.querySelector('[name="message"]');

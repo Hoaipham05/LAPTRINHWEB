@@ -12,3 +12,4 @@ git stash pop (paste cái code của tụi khi trước lưu tạm ấy)
 làm xong rồi thì đẩy code lên github như bình thường
 
 
+thuốc

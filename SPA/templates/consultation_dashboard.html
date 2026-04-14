@@ -64,7 +64,11 @@
                 {% if conversations %}
                 <div class="conversation-list">
                     {% for item in conversations %}
-                    <a class="conversation-card" href="{% url 'consultation_detail' item.id %}">
+                    <a
+                        class="conversation-card {% if forloop.counter <= 3 %}is-unread{% endif %}"
+                        href="{% url 'consultation_detail' item.id %}"
+                        data-conversation-id="{{ item.id }}"
+                    >
                         <div class="conversation-avatar {{ item.avatar_class }}"></div>
                         <div class="conversation-content">
                             <strong>{{ item.name }}</strong>

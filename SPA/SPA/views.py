@@ -9,6 +9,7 @@ def service_dashboard(request):
             "price": "1.000.000",
             "status": "Hoạt động",
             "image_class": "peach",
+            "image_url": "https://tourdanangcity.vn/wp-content/uploads/2024/06/review-spa-hoi-an.jpg",
         },
         {
             "name": "Massage body thư giãn",
@@ -16,6 +17,7 @@ def service_dashboard(request):
             "price": "800.000",
             "status": "Hoạt động",
             "image_class": "amber",
+            "image_url": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/63/9f/04/sakura-massage-spa.jpg?w=900&h=500&s=1",
         },
         {
             "name": "Triệt lông công nghệ Diode",
@@ -23,6 +25,7 @@ def service_dashboard(request):
             "price": "800.000",
             "status": "Hoạt động",
             "image_class": "sun",
+            "image_url": "https://images.virginexperiencedays.co.uk/images/product/large/mychocolate-chocoholic-workshop-with-29145629.jpg?auto=compress%2Cformat&w=1440&q=80&fit=max",
         },
         {
             "name": "Gội đầu dưỡng sinh",
@@ -30,6 +33,7 @@ def service_dashboard(request):
             "price": "300.000",
             "status": "Hoạt động",
             "image_class": "sea",
+            "image_url": "https://static.vinwonders.com/production/2025/09/spa-ha-noi-topbanner.jpg",
         },
         {
             "name": "Trị mụn chuyên sâu",
@@ -37,6 +41,7 @@ def service_dashboard(request):
             "price": "800.000",
             "status": "Hoạt động",
             "image_class": "rose",
+            "image_url": "https://static.hotdeal.vn/images/1535/1534508/60x60/349662-dang-cap-massage-bau-5-thu-gian-toan-than-cho-me-khoe-be-thong-minh-tai-bloomy-spa.jpg",
         },
         {
             "name": "Acne Detox Therapy",
@@ -44,6 +49,7 @@ def service_dashboard(request):
             "price": "950.000",
             "status": "Hoạt động",
             "image_class": "mint",
+            "image_url": "https://file.hstatic.net/200000827051/article/facial_treatment_f73cebb667794301afd01348897774e7.jpg",
         },
         {
             "name": "Post-Acne Recovery Therapy",
@@ -51,6 +57,7 @@ def service_dashboard(request):
             "price": "1.200.000",
             "status": "Hoạt động",
             "image_class": "violet",
+            "image_url": "https://hd1.hotdeal.vn/images/uploads/2016/Thang%208/31/285824/285824-dung-spa-body%20%289%29.jpg",
         },
     ]
     return render(request, "service_dashboard.html", {"services": services})
@@ -225,63 +232,8 @@ def feedback_dashboard(request):
     return render(request, "feedback_dashboard.html", {"feedbacks": feedbacks})
 
 
-def consultation_dashboard(request):
-    conversations = [
-        {
-            "id": 1,
-            "name": "Mai Hồng Ngọc",
-            "avatar_class": "chat-avatar-one",
-            "preview": "Cho em hỏi về dịch vụ bên mình bao nhiêu......",
-            "time": "19:30",
-        },
-        {
-            "id": 2,
-            "name": "Trần Thiên Hà",
-            "avatar_class": "avatar-neutral",
-            "preview": "Shop ơi tư vấn này giúp e với .....",
-            "time": "Hôm qua",
-        },
-        {
-            "id": 3,
-            "name": "Ngô Thanh Vân",
-            "avatar_class": "chat-avatar-two",
-            "preview": "Shop ơi tư vấn này giúp e với .....",
-            "time": "23/01/2026",
-        },
-        {
-            "id": 4,
-            "name": "Lê Thư Ý",
-            "avatar_class": "chat-avatar-three",
-            "preview": "Shop ơi",
-            "time": "23/01/2026",
-        },
-        {
-            "id": 5,
-            "name": "Lê Trà Thư",
-            "avatar_class": "avatar-neutral",
-            "preview": "Ngày mai nha",
-            "time": "23/01/2026",
-        },
-    ]
-    search = request.GET.get("q", "").strip()
-    empty_state = request.GET.get("empty", "") == "1"
-    if search:
-        lowered = search.lower()
-        conversations = [item for item in conversations if lowered in item["name"].lower()]
-    if empty_state:
-        conversations = []
-    return render(
-        request,
-        "consultation_dashboard.html",
-        {
-            "conversations": conversations,
-            "search": search,
-        },
-    )
-
-
-def consultation_detail(request, conversation_id):
-    conversations = {
+def get_consultation_data():
+    return {
         1: {
             "id": 1,
             "name": "Mai Hồng Ngọc",
@@ -303,16 +255,7 @@ def consultation_detail(request, conversation_id):
             "name": "Ngô Thanh Vân",
             "avatar_class": "chat-avatar-two",
             "messages": [
-                {"divider": "Hôm qua 19:45"},
-                {"side": "left", "text": "Shop ơi tư vấn này giúp e với về gói chăm da với", "time": ""},
-                {
-                    "side": "right",
-                    "text": "Chào mừng bạn đến với dịch vụ Mai Trâm, bạn vui lòng đợi một chút sẽ có nhân viên tư vấn cho bạn ạ!",
-                    "time": "19:45",
-                },
-                {"divider": "10:50"},
-                {"side": "left", "text": "Shop ơi tư vấn ạ", "time": ""},
-                {"side": "right", "text": "Em đây ạ", "time": "10:52"},
+                {"side": "left", "text": "Shop ơi tư vấn này giúp e với .....", "time": "23/01/2026"},
             ],
         },
         4: {
@@ -320,7 +263,19 @@ def consultation_detail(request, conversation_id):
             "name": "Lê Thư Ý",
             "avatar_class": "chat-avatar-three",
             "messages": [
-                {"side": "left", "text": "Shop ơi", "time": "23/01/2026"},
+                {"divider": "23/01/2026"},
+                {"side": "left", "text": "Shop ơi", "time": ""},
+                {
+                    "side": "right",
+                    "text": "Dạ em chào chị, chị cần bên em tư vấn dịch vụ nào ạ?",
+                    "time": "09:03",
+                },
+                {"side": "left", "text": "Mình muốn đặt lịch gội đầu dưỡng sinh vào cuối tuần này", "time": ""},
+                {
+                    "side": "right",
+                    "text": "Dạ cuối tuần bên em còn slot 15:00 và 17:00, chị chọn giờ nào để em giữ lịch nhé.",
+                    "time": "09:05",
+                },
             ],
         },
         5: {
@@ -328,10 +283,61 @@ def consultation_detail(request, conversation_id):
             "name": "Lê Trà Thư",
             "avatar_class": "avatar-neutral",
             "messages": [
-                {"side": "left", "text": "Ngày mai nha", "time": "23/01/2026"},
+                {"divider": "23/01/2026"},
+                {"side": "left", "text": "Ngày mai nha", "time": ""},
+                {
+                    "side": "right",
+                    "text": "Dạ em đã note lịch ngày mai cho chị rồi ạ.",
+                    "time": "21:40",
+                },
+                {"side": "left", "text": "Khoảng 10h chị qua được không em?", "time": ""},
+                {
+                    "side": "right",
+                    "text": "Dạ được chị nha, em giữ lịch 10:00 và sẽ nhắn xác nhận trước 30 phút ạ.",
+                    "time": "21:42",
+                },
             ],
         },
     }
+
+
+def consultation_dashboard(request):
+    conversation_data = get_consultation_data()
+    conversations = []
+
+    for item in conversation_data.values():
+        messages = item["messages"]
+        latest_message = next((msg for msg in reversed(messages) if "text" in msg), None)
+
+        conversations.append(
+            {
+                "id": item["id"],
+                "name": item["name"],
+                "avatar_class": item["avatar_class"],
+                "preview": latest_message["text"] if latest_message else "",
+                "time": latest_message.get("time", "") if latest_message else "",
+            }
+        )
+
+    search = request.GET.get("q", "").strip()
+    empty_state = request.GET.get("empty", "") == "1"
+    if search:
+        lowered = search.lower()
+        conversations = [item for item in conversations if lowered in item["name"].lower()]
+    if empty_state:
+        conversations = []
+    return render(
+        request,
+        "consultation_dashboard.html",
+        {
+            "conversations": conversations,
+            "search": search,
+        },
+    )
+
+
+def consultation_detail(request, conversation_id):
+    conversations = get_consultation_data()
     conversation = conversations.get(conversation_id, conversations[3])
     modal_state = request.GET.get("modal", "")
     return render(

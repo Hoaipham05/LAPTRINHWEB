@@ -67,7 +67,11 @@
                         <tr>
                             <td>
                                 <div class="service-cell">
-                                    <div class="service-thumb {{ service.image_class }}"></div>
+                                    <div class="service-thumb {{ service.image_class }}">
+                                        {% if service.image_url %}
+                                        <img src="{{ service.image_url }}" alt="{{ service.name }}" onerror="this.remove()">
+                                        {% endif %}
+                                    </div>
                                     <span>{{ service.name }}</span>
                                 </div>
                             </td>
@@ -109,10 +113,20 @@
                 </label>
                 <div class="upload-box">
                     <span>Hình ảnh dịch vụ</span>
-                    <div class="upload-dropzone">
-                        <div class="upload-icon">IMG</div>
-                        <p>Nhấp để tải ảnh lên<br>PNG, JPG hoặc WEBP (tối đa 5MB)</p>
-                    </div>
+                    <input class="upload-input" id="add-service-image" type="file" name="image" accept="image/png,image/jpeg,image/webp" hidden>
+                    <label class="upload-dropzone" for="add-service-image">
+                        <div class="upload-icon" aria-hidden="true">
+                            <span class="upload-plus"></span>
+                        </div>
+                        <div class="upload-copy">
+                            <strong>Thêm ảnh vào</strong>
+                            <p>Nhấp để chọn ảnh thật<br>PNG, JPG hoặc WEBP (tối đa 5MB)</p>
+                            <span class="upload-file-name" data-file-name>Chưa chọn tệp nào</span>
+                        </div>
+                        <div class="upload-preview hidden" data-upload-preview>
+                            <img src="" alt="Xem trước ảnh dịch vụ">
+                        </div>
+                    </label>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="secondary-btn" data-close-modal>Hủy</button>
@@ -140,10 +154,20 @@
                 </label>
                 <div class="upload-box">
                     <span>Hình ảnh dịch vụ</span>
-                    <div class="upload-dropzone">
-                        <div class="upload-icon">IMG</div>
-                        <p>Nhấp để tải ảnh lên<br>PNG, JPG hoặc WEBP (tối đa 5MB)</p>
-                    </div>
+                    <input class="upload-input" id="edit-service-image" type="file" name="image" accept="image/png,image/jpeg,image/webp" hidden>
+                    <label class="upload-dropzone" for="edit-service-image">
+                        <div class="upload-icon" aria-hidden="true">
+                            <span class="upload-plus"></span>
+                        </div>
+                        <div class="upload-copy">
+                            <strong>Thêm ảnh vào</strong>
+                            <p>Nhấp để chọn ảnh thật<br>PNG, JPG hoặc WEBP (tối đa 5MB)</p>
+                            <span class="upload-file-name" data-file-name>Chưa chọn tệp nào</span>
+                        </div>
+                        <div class="upload-preview hidden" data-upload-preview>
+                            <img src="" alt="Xem trước ảnh dịch vụ">
+                        </div>
+                    </label>
                 </div>
                 <div class="modal-actions three-actions">
                     <button type="button" class="primary-btn muted" data-modal-target="update-price-modal">Cập nhật giá</button>
@@ -201,6 +225,30 @@
         <div class="modal-panel alert-panel">
             <div class="alert-icon">!</div>
             <p>Giá dịch vụ phải lớn hơn 0. Vui lòng nhập lại.</p>
+            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
+        </div>
+    </section>
+
+    <section class="modal hidden modal-alert" id="error-duplicate-service" aria-hidden="true">
+        <div class="modal-panel alert-panel">
+            <div class="alert-icon">!</div>
+            <p>Dịch vụ đã tồn tại !</p>
+            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
+        </div>
+    </section>
+
+    <section class="modal hidden modal-alert" id="error-invalid-image-type" aria-hidden="true">
+        <div class="modal-panel alert-panel">
+            <div class="alert-icon">!</div>
+            <p>Hình ảnh không đúng định dạng !</p>
+            <button type="button" class="primary-btn" data-close-modal>Đóng</button>
+        </div>
+    </section>
+
+    <section class="modal hidden modal-alert" id="error-image-too-large" aria-hidden="true">
+        <div class="modal-panel alert-panel">
+            <div class="alert-icon">!</div>
+            <p>Hình ảnh vượt quá dung lượng cho phép !</p>
             <button type="button" class="primary-btn" data-close-modal>Đóng</button>
         </div>
     </section>
