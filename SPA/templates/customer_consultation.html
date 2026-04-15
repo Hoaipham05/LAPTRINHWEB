@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tư vấn | Mai Trâm Spa</title>
+    <link rel="stylesheet" href="{% static 'css/customer-consultation.css' %}?v=1">
+</head>
+<body>
+    <div class="consultation-page">
+        <header class="site-header">
+            <a class="brand" href="{% url 'about_page' %}">
+                <span class="brand-title">MAI TRÂM</span>
+                <span class="brand-sub">Beauty &amp; Spa</span>
+            </a>
+
+            <nav class="site-nav" aria-label="Dieu huong chinh">
+                <a href="{% url 'see_service' %}">Dịch vụ</a>
+                <a class="active" href="{% url 'customer_consultation' %}">Tư vấn</a>
+                <a href="{% url 'public_review_page' %}">Đánh giá</a>
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_staff %}
+                    <a href="{% url 'service_dashboard' %}">Tài khoản</a>
+                    {% else %}
+                    <a href="{% url 'customer_account' %}">Tài khoản</a>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'user_login' %}">Tài khoản</a>
+                {% endif %}
+            </nav>
+
+            {% if request.user.is_authenticated and not request.user.is_staff %}
+            <a class="booking-btn" href="{% url 'booking' %}">Đặt lịch hẹn</a>
+            {% else %}
+            <a class="booking-btn" href="{% url 'see_service' %}">Đặt lịch hẹn</a>
+            {% endif %}
+        </header>
+
+        <main class="consultation-main">
+            <section class="faq-board">
+                {% for item in faq_items %}
+                <article class="faq-row">
+                    <div class="faq-question">{{ item.question }}</div>
+                    <div class="faq-answer">{{ item.answer }}</div>
+                </article>
+                {% endfor %}
+            </section>
+        </main>
+
+        <footer class="footer">
+            <section class="footer-col intro">
+                <h3>Mai Trâm Spa</h3>
+                <p>Nơi vẻ đẹp thăng hoa - Chăm sóc sắc đẹp toàn diện với công nghệ hiện đại và đội ngũ chuyên gia hàng đầu.</p>
+                <div class="socials">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">ig</a>
+                    <a href="#" aria-label="Twitter">x</a>
+                </div>
+            </section>
+
+            <section class="footer-col">
+                <h3>Dịch vụ</h3>
+                <p>Chăm sóc da mặt</p>
+                <p>Massage body</p>
+                <p>Triệt lông</p>
+                <p>Điều trị mụn</p>
+                <p>Tắm trắng</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Về chúng tôi</h3>
+                <p>Giới thiệu</p>
+                <p>Đội ngũ</p>
+                <p>Tin tức</p>
+                <p>Liên hệ</p>
+                <p>Tuyển dụng</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Liên hệ</h3>
+                <p>104/7 Lê Đình Lý, Thanh Khê, Đà Nẵng</p>
+                <p>0901 234 589</p>
+                <p>info@maitram.spa</p>
+            </section>
+        </footer>
+
+        <button class="chat-fab" type="button" data-chat-toggle aria-label="Mo khung tu van">
+            <span class="chat-fab-icon"></span>
+        </button>
+
+        <section class="chat-widget hidden" data-chat-widget>
+            <header class="chat-header">
+                <div class="chat-agent">
+                    <div class="chat-avatar"></div>
+                    <strong>Mai Trâm Spa</strong>
+                </div>
+                <button class="chat-close" type="button" data-chat-close aria-label="Dong khung tu van">×</button>
+            </header>
+
+            <div class="chat-time">Hôm qua 19:45</div>
+
+            <div class="chat-body">
+                {% for item in chat_messages %}
+                <div class="chat-row {{ item.side }}">
+                    <p class="chat-bubble">{{ item.text }}</p>
+                    <span class="chat-stamp">{{ item.time }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <form class="chat-input-row" data-chat-form>
+                <input type="text" name="message" placeholder="Nhập tin nhắn">
+                <button type="submit" aria-label="Gui tin nhan">➤</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="{% static 'js/customer-consultation.js' %}?v=1"></script>
+</body>
+</html>
+

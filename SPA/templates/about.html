@@ -18,12 +18,28 @@
             <nav class="main-menu">
                 <ul>
                     <li><a href="#dich-vu">Dịch vụ</a></li>
-                    <li><a href="#tu-van">Tư vấn</a></li>
+                    <li><a href="{% url 'customer_consultation' %}">Tư vấn</a></li>
                     <li><a href="{% url 'public_review_page' %}">Đánh giá</a></li>
-                    <li><a href="{% url 'user_login' %}">Tài khoản</a></li>
+                    <li>
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.is_staff %}
+                            <a href="{% url 'service_dashboard' %}">Tài khoản</a>
+                            {% else %}
+                            <a href="{% url 'customer_account' %}">Tài khoản</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'user_login' %}">Tài khoản</a>
+                        {% endif %}
+                    </li>
                 </ul>
             </nav>
-            <a href="#dat-lich" class="btn-book">Đặt lịch hẹn</a>
+            {% if request.user.is_authenticated and not request.user.is_staff %}
+            <a href="{% url 'booking' %}" class="btn-book">Đặt lịch hẹn</a>
+            {% elif request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'service_dashboard' %}" class="btn-book">Vào quản lý</a>
+            {% else %}
+            <a href="{% url 'see_service' %}" class="btn-book">Xem dịch vụ</a>
+            {% endif %}
         </div>
     </header>
     <section class="spa-banner">
@@ -154,7 +170,11 @@
                 <div class="cta-content">
                     <h2>Sẵn Sàng Chăm Sóc Bản Thân?</h2>
                     <p>Đặt lịch hẹn ngay hôm nay và nhận ưu đãi đặc biệt cho khách hàng mới</p>
-                    <a href="{% url 'appointment_dashboard' %}" class="btn-cta">Đặt Lịch Hẹn Ngay</a>
+                    {% if request.user.is_authenticated and not request.user.is_staff %}
+                    <a href="{% url 'booking' %}" class="btn-cta">Đặt Lịch Hẹn Ngay</a>
+                    {% else %}
+                    <a href="{% url 'see_service' %}" class="btn-cta">Khám Phá Dịch Vụ</a>
+                    {% endif %}
                 </div>
             </section>
             <!-- Section 5: Gallery -->

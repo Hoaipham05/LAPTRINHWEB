@@ -17,12 +17,24 @@
 
             <nav class="nav">
                 <a class="active" href="{% url 'see_service' %}">Dịch vụ</a>
-                <a href="{% url 'consultation_dashboard' %}">Tư vấn</a>
-                <a href="{% url 'feedback_dashboard' %}">Đánh giá</a>
-                <a href="{% url 'customer_dashboard' %}">Tài khoản</a>
+                <a href="{% url 'customer_consultation' %}">Tư vấn</a>
+                <a href="{% url 'public_review_page' %}">Đánh giá</a>
+                {% if request.user.is_authenticated %}
+                    {% if request.user.is_staff %}
+                    <a href="{% url 'service_dashboard' %}">Tài khoản</a>
+                    {% else %}
+                    <a href="{% url 'customer_account' %}">Tài khoản</a>
+                    {% endif %}
+                {% else %}
+                <a href="{% url 'user_login' %}">Tài khoản</a>
+                {% endif %}
             </nav>
 
-            <a class="btn-book" href="{% url 'appointment_dashboard' %}">Đặt lịch hẹn</a>
+            {% if request.user.is_authenticated and not request.user.is_staff %}
+            <a class="btn-book" href="{% url 'booking' %}">Đặt lịch hẹn</a>
+            {% else %}
+            <a class="btn-book" href="{% url 'user_login' %}">Đăng nhập đặt lịch</a>
+            {% endif %}
         </header>
 
         <main class="main-content">

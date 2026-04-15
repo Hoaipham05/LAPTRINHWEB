@@ -36,8 +36,9 @@
         <div class="manager-nav-user" aria-label="Người dùng quản lý">
             <div class="manager-avatar manager-avatar--nav"></div>
             <div class="manager-nav-user-copy">
-                <strong>Quản lý</strong>
+                <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
             </div>
+            <a class="manager-nav-link" href="{% url 'user_logout' %}">Đăng xuất</a>
         </div>
     </div>
 </header>

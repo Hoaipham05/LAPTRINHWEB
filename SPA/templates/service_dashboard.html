@@ -39,7 +39,8 @@
 
             <div class="manager-card manager-card-top">
                 <div class="manager-avatar"></div>
-                <span>Quản lý</span>
+                <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+                <a class="nav-subitem" href="{% url 'user_logout' %}">Đăng xuất</a>
             </div>
         </header>
 

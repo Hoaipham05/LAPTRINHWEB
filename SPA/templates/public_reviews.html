@@ -17,12 +17,28 @@
             <nav class="main-menu">
                 <ul>
                     <li><a href="{% url 'about_page' %}#dich-vu">Dịch vụ</a></li>
-                    <li><a href="{% url 'about_page' %}#tu-van">Tư vấn</a></li>
+                    <li><a href="{% url 'customer_consultation' %}">Tư vấn</a></li>
                     <li><a href="{% url 'public_review_page' %}" class="active">Đánh giá</a></li>
-                    <li><a href="{% url 'about_page' %}#tai-khoan">Tài khoản</a></li>
+                    <li>
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.is_staff %}
+                            <a href="{% url 'service_dashboard' %}">Tài khoản</a>
+                            {% else %}
+                            <a href="{% url 'customer_account' %}">Tài khoản</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'user_login' %}">Tài khoản</a>
+                        {% endif %}
+                    </li>
                 </ul>
             </nav>
-            <a href="{% url 'about_page' %}#dat-lich" class="btn-book">Đặt lịch hẹn</a>
+            {% if request.user.is_authenticated and not request.user.is_staff %}
+            <a href="{% url 'booking' %}" class="btn-book">Đặt lịch hẹn</a>
+            {% elif request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'service_dashboard' %}" class="btn-book">Vào quản lý</a>
+            {% else %}
+            <a href="{% url 'see_service' %}" class="btn-book">Xem dịch vụ</a>
+            {% endif %}
         </div>
     </header>
 
@@ -34,7 +50,11 @@
                 <p>Trang này tổng hợp cảm nhận của khách hàng về không gian, kỹ thuật viên, hiệu quả dịch vụ và trải nghiệm tổng thể tại spa.</p>
                 <div class="hero-actions">
                     <a href="#review-list" class="primary-link">Xem đánh giá</a>
-                    <a href="{% url 'about_page' %}#dat-lich" class="secondary-link">Đặt lịch ngay</a>
+                    {% if request.user.is_authenticated and not request.user.is_staff %}
+                    <a href="{% url 'booking' %}" class="secondary-link">Đặt lịch ngay</a>
+                    {% else %}
+                    <a href="{% url 'see_service' %}" class="secondary-link">Khám phá dịch vụ</a>
+                    {% endif %}
                 </div>
             </div>
             <aside class="hero-highlight">

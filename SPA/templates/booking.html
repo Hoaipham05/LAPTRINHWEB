@@ -5,21 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đặt lịch hẹn | Mai Trâm Beauty &amp; Spa</title>
-    <link rel="stylesheet" href="{% static 'css/booking.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'css/booking.css' %}?v=4">
 </head>
 <body>
     <div class="booking-page">
         <header class="site-header">
-            <a class="brand" href="{% url 'home' %}">
+            <a class="brand" href="{% url 'see_service' %}">
                 <span class="brand-mark">MAI TRÂM</span>
                 <span class="brand-sub">Beauty &amp; Spa</span>
             </a>
 
             <nav class="site-nav" aria-label="Điều hướng chính">
-                <a class="site-nav__link" href="{% url 'home' %}">Dịch vụ</a>
-                <a class="site-nav__link" href="{% url 'consultation_dashboard' %}">Tư vấn</a>
-                <a class="site-nav__link" href="{% url 'feedback_dashboard' %}">Đánh giá</a>
-                <a class="site-nav__link" href="{% url 'profile' %}">Tài khoản</a>
+                <a class="site-nav__link" href="{% url 'see_service' %}">Dịch vụ</a>
+                <a class="site-nav__link" href="{% url 'customer_consultation' %}">Tư vấn</a>
+                <a class="site-nav__link" href="{% url 'public_review_page' %}">Đánh giá</a>
+                <a class="site-nav__link" href="{% url 'customer_account' %}">Tài khoản</a>
             </nav>
 
             <a class="site-header__cta is-active" href="{% url 'booking' %}">Đặt lịch hẹn</a>
@@ -75,7 +75,9 @@
                                 data-service-duration="{{ service.duration }}"
                                 data-service-price="{{ service.price }}"
                             >
-                                <span class="service-card__media tone-{{ service.tone }}"></span>
+                                <span class="service-card__media tone-{{ service.tone }}">
+                                    <img src="{{ service.image_url }}" alt="{{ service.name }}">
+                                </span>
                                 <span class="service-card__body">
                                     <span class="service-card__title">{{ service.name }}</span>
                                     <span class="service-card__description">{{ service.description }}</span>
@@ -192,6 +194,43 @@
                 </div>
             </section>
         </main>
+
+        <footer class="footer">
+            <section class="footer-col intro">
+                <h3>Mai Tram Spa</h3>
+                <p>Noi ve dep thang hoa voi cac lieu trinh cham soc da, body va triet long theo quy trinh chuyen nghiep.</p>
+                <div class="socials">
+                    <a href="#" aria-label="Facebook">f</a>
+                    <a href="#" aria-label="Instagram">ig</a>
+                    <a href="#" aria-label="Twitter">x</a>
+                </div>
+            </section>
+
+            <section class="footer-col">
+                <h3>Dich vu</h3>
+                <p>Cham soc da mat</p>
+                <p>Massage body</p>
+                <p>Triet long</p>
+                <p>Dieu tri mun</p>
+                <p>Xong hoi</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Ve chung toi</h3>
+                <p>Gioi thieu</p>
+                <p>Doi ngu</p>
+                <p>Tin tuc</p>
+                <p>Lien he</p>
+                <p>Tuyen dung</p>
+            </section>
+
+            <section class="footer-col">
+                <h3>Lien he</h3>
+                <p>104/7 Le Dinh Ly, Thanh Khe, Da Nang</p>
+                <p>0901 234 589</p>
+                <p>info@maitram.spa</p>
+            </section>
+        </footer>
     </div>
 
     <form id="booking-submit-form" method="post" action="{% url 'booking' %}" hidden>
@@ -204,6 +243,6 @@
 
     {{ packages_by_service|json_script:"booking-packages-data" }}
     {{ time_slots_by_date|json_script:"booking-slots-data" }}
-    <script src="{% static 'js/booking.js' %}?v=2"></script>
+    <script src="{% static 'js/booking.js' %}?v=4"></script>
 </body>
 </html>

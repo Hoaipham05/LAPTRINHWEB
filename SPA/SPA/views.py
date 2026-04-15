@@ -1,3 +1,5 @@
+from datetime import date, timedelta
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -5,6 +7,39 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .forms import CustomerProfileForm, LoginForm, RegisterForm
 from services.models import CustomerProfile, Service
+
+
+def redirect_by_role(request):
+    if not request.user.is_authenticated:
+        return redirect("about_page")
+    if request.user.is_staff:
+        return redirect("service_dashboard")
+    return redirect("customer_account")
+
+
+def manager_required(view_func):
+    @login_required(login_url="user_login")
+    def wrapped(request, *args, **kwargs):
+        if not request.user.is_staff:
+            messages.warning(request, "Trang nay chi danh cho quan ly.")
+            return redirect("customer_account")
+        return view_func(request, *args, **kwargs)
+
+    return wrapped
+
+
+def customer_required(view_func):
+    @login_required(login_url="user_login")
+    def wrapped(request, *args, **kwargs):
+        if request.user.is_staff:
+            return redirect("service_dashboard")
+        return view_func(request, *args, **kwargs)
+
+    return wrapped
+
+
+def home_entry(request):
+    return redirect_by_role(request)
 
 
 def format_service_price(value):
@@ -126,11 +161,7 @@ def get_public_reviews():
 def user_login(request):
     """Xử lý đăng nhập người dùng"""
     if request.user.is_authenticated:
-        # Nếu là admin/staff, vào service_dashboard
-        if request.user.is_staff:
-            return redirect('service_dashboard')
-        # Nếu là người dùng thường, vào customer_dashboard
-        return redirect('customer_account')
+        return redirect_by_role(request)
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -164,11 +195,7 @@ def user_login(request):
 def user_register(request):
     """Xử lý đăng ký tài khoản người dùng"""
     if request.user.is_authenticated:
-        # Nếu là admin/staff, vào service_dashboard
-        if request.user.is_staff:
-            return redirect('service_dashboard')
-        # Nếu là người dùng thường, vào customer_dashboard
-        return redirect('customer_account')
+        return redirect_by_role(request)
 
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -206,6 +233,7 @@ def user_logout(request):
     return redirect('user_login')
 
 
+@manager_required
 def service_dashboard(request):
     services = [
         {
@@ -268,6 +296,7 @@ def service_dashboard(request):
     return render(request, "service_dashboard.html", {"services": services})
 
 
+@manager_required
 def appointment_dashboard(request):
     appointments = [
         {
@@ -447,6 +476,7 @@ def appointment_dashboard(request):
     )
 
 
+@manager_required
 def customer_dashboard(request):
     customers = [
         {
@@ -722,6 +752,7 @@ def customer_dashboard(request):
     return render(request, "customer_dashboard.html", {"customers": customers})
 
 
+@manager_required
 def customer_detail(request, customer_id):
     customer = {
         "id": customer_id,
@@ -748,6 +779,7 @@ def customer_detail(request, customer_id):
     return render(request, "customer_detail.html", {"customer": customer})
 
 
+@manager_required
 def feedback_dashboard(request):
     # Dữ liệu mẫu cho các đánh giá
     names = [
@@ -918,6 +950,7 @@ def get_consultation_data():
     }
 
 
+@manager_required
 def consultation_dashboard(request):
     conversation_data = get_consultation_data()
     conversations = []
@@ -953,6 +986,7 @@ def consultation_dashboard(request):
     )
 
 
+@manager_required
 def consultation_detail(request, conversation_id):
     conversations = get_consultation_data()
     conversation = conversations.get(conversation_id, conversations[3])
@@ -967,6 +1001,7 @@ def consultation_detail(request, conversation_id):
     )
 
 
+@manager_required
 def feedback_detail(request, feedback_id):
     feedback = {
         "id": feedback_id,
@@ -978,6 +1013,53 @@ def feedback_detail(request, feedback_id):
         "content": "Dịch vụ massage rất tốt! Nhân viên massage chuyên nghiệp, lực tay vừa phải. Tinh dầu thơm nhẹ nhàng không gây kích ứng. Sau 60 phút massage, cơ thể mình thư giãn hẳn, giảm đau mỏi vai gáy rất nhiều. Giá cả hợp lý, spa sạch sẽ thoáng mát.",
     }
     return render(request, "feedback_detail.html", {"feedback": feedback})
+
+
+def customer_consultation_page(request):
+    faq_items = [
+        {
+            "question": "Da nhay cam co the lam lieu trinh massage hoac cham soc mat khong?",
+            "answer": "Chung toi co cac lieu trinh danh rieng cho da nhay cam, su dung san pham diu nhe va nhan vien se tu van ky truoc khi thuc hien.",
+        },
+        {
+            "question": "Lieu trinh lam trang da co an toan cho da nhay cam khong?",
+            "answer": "Spa su dung san pham chuyen dung cho da nhay cam va ky thuat vien duoc dao tao de giam nguy co kich ung truoc khi tien hanh toan bo lieu trinh.",
+        },
+        {
+            "question": "Sau khi lan kim hoac peel da, toi can bao lau de da phuc hoi hoan toan?",
+            "answer": "Thoi gian phuc hoi tuy vao co dia va do sau cua lieu trinh, thong thuong tu 3 den 7 ngay neu cham soc dung cach tai nha.",
+        },
+    ]
+    chat_messages = [
+        {
+            "side": "right",
+            "text": "Shop oi tu van nay giup em voi ve goi cham da voi",
+            "time": "10:48",
+        },
+        {
+            "side": "left",
+            "text": "Chao mung ban den voi dich vu Mai Tram, ban vui long doi mot chut se co nhan vien tu van ngay.",
+            "time": "10:50",
+        },
+        {
+            "side": "right",
+            "text": "Shop oi tu van a",
+            "time": "10:50",
+        },
+        {
+            "side": "left",
+            "text": "Em day a",
+            "time": "10:52",
+        },
+    ]
+    return render(
+        request,
+        "customer_consultation.html",
+        {
+            "faq_items": faq_items,
+            "chat_messages": chat_messages,
+        },
+    )
 
 
 def about_page(request):
@@ -1001,7 +1083,7 @@ def public_review_page(request):
     return render(request, "public_reviews.html", context)
 
 
-@login_required
+@customer_required
 def customer_account(request):
     profile, _ = CustomerProfile.objects.get_or_create(
         user=request.user,
@@ -1033,6 +1115,153 @@ def customer_account(request):
         "display_name": profile.display_name,
     }
     return render(request, "customer_account.html", context)
+
+
+def build_booking_calendar(days=14):
+    today = date.today()
+    items = []
+    for offset in range(days):
+        current = today + timedelta(days=offset)
+        items.append(
+            {
+                "day": current.day,
+                "iso": current.isoformat(),
+                "disabled": False,
+                "is_today": offset == 0,
+            }
+        )
+    return items
+
+
+@customer_required
+def booking_page(request):
+    if request.method == "POST":
+        messages.success(request, "Dat lich thanh cong. Spa se lien he xac nhan som.")
+        return redirect("booking")
+
+    services = [
+        {
+            "id": 1,
+            "name": "Cham soc da mat Collagen",
+            "description": "Lam sach sau, duong am va tai tao da",
+            "duration": "60 phut",
+            "rating": "4.9",
+            "price": "1.200.000d",
+            "tone": "peach",
+            "image_url": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&w=900&q=80",
+        },
+        {
+            "id": 2,
+            "name": "Tri mun chuyen sau",
+            "description": "Dieu tri mun an toan, hieu qua",
+            "duration": "60 phut",
+            "rating": "4.8",
+            "price": "800.000d",
+            "tone": "rose",
+            "image_url": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+        },
+        {
+            "id": 3,
+            "name": "Massage body thu gian",
+            "description": "Massage toan than thong co va giam cang thang",
+            "duration": "60 phut",
+            "rating": "4.8",
+            "price": "500.000d",
+            "tone": "sea",
+            "image_url": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=900&q=80",
+        },
+        {
+            "id": 4,
+            "name": "Triet long vinh vien bang laser IPL",
+            "description": "Cong nghe triet long hien dai va an toan",
+            "duration": "90 phut",
+            "rating": "4.7",
+            "price": "2.000.000d",
+            "tone": "mint",
+            "image_url": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=900&q=80",
+        },
+    ]
+
+    package_catalog = [
+        {
+            "id": "basic",
+            "name": "Goi co ban",
+            "sessions": "1-2",
+            "price": "Tu 800.000d",
+            "result": "Phu hop cho lan dau trai nghiem",
+            "benefits": [
+                "Lam sach co ban",
+                "Massage mat thu gian",
+                "Dap mat na Collagen",
+                "Duong am nhanh",
+            ],
+        },
+        {
+            "id": "standard",
+            "name": "Goi tieu chuan",
+            "sessions": "3-5",
+            "price": "Tu 1.300.000d",
+            "result": "Hieu qua ro ret sau 1 thang",
+            "benefits": [
+                "Tat ca quyen loi goi co ban",
+                "Tay te bao chet chuyen sau",
+                "Serum duong da cao cap",
+                "Tu van cham soc tai nha",
+            ],
+        },
+        {
+            "id": "advanced",
+            "name": "Goi cao cap",
+            "sessions": "8-10",
+            "price": "Tu 2.500.000d",
+            "result": "Cham soc toan dien, hieu qua lau dai",
+            "benefits": [
+                "Tat ca quyen loi goi tieu chuan",
+                "Cong nghe dieu tri tien tien",
+                "Massage vai gay mien phi",
+                "Tang bo skincare mini",
+            ],
+        },
+        {
+            "id": "vip",
+            "name": "Goi VIP",
+            "sessions": "12-15",
+            "price": "Tu 3.500.000d",
+            "result": "Trai nghiem dang cap 5 sao",
+            "benefits": [
+                "Tat ca quyen loi goi cao cap",
+                "Phong rieng VIP sang trong",
+                "Thu cong nghe tri lieu moi",
+                "Tang bo skincare cao cap",
+            ],
+            "theme": "vip",
+        },
+    ]
+
+    packages_by_service = {
+        str(service["id"]): [dict(item) for item in package_catalog]
+        for service in services
+    }
+    today_iso = date.today().isoformat()
+    time_slots_by_date = {
+        today_iso: ["09:00", "10:30", "14:00", "16:00"],
+    }
+    profile, _ = CustomerProfile.objects.get_or_create(user=request.user)
+
+    context = {
+        "services": services,
+        "packages_by_service": packages_by_service,
+        "time_slots_by_date": time_slots_by_date,
+        "calendar_days": build_booking_calendar(),
+        "current_month_label": date.today().strftime("%m/%Y"),
+        "customer_info": {
+            "full_name": profile.display_name,
+            "phone": profile.phone or "Chua cap nhat",
+            "email": request.user.email,
+        },
+        "history": build_customer_history(),
+    }
+    return render(request, "booking.html", context)
 
 
 def see_service(request):
